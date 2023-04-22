@@ -3,85 +3,113 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
 const ModalActEval = ({ idGrupo }) => {
+  const [filas, setFilas] = useState([]);
   const [lgShow, setLgShow] = useState(false);
   const [tdList, setTdList] = useState([]);
+
   const handleClose = () => setLgShow(false);
   const handleShow = () => setLgShow(true);
+  const [rows, setRows] = useState([]);
 
-  const agregarEvaluacion = () => {
-    const newTdList = [
-      ...tdList,
-      <tr key={tdList.length + 1}>
-        <td>
-          <input type="text" name={`valor1_${tdList.length + 1}`} />
-        </td>
-        <td>
-          <input type="text" name={`valor2_${tdList.length + 1}`} />
-        </td>
-        <td>
-          <button onClick={() => eliminarActividad(tdList.length)}>
-            Eliminar
-          </button>
-        </td>
-      </tr>,
-    ];
-    setTdList(newTdList);
+  const addRow = () => {
+    const newRow = {
+      id: "",
+      concepto: "",
+      porcentaje: "",
+    };
+    setRows([...rows, newRow]);
   };
 
-  const eliminarActividad = (index) => {
-    const newTdList = tdList.filter((td, i) => i !== index);
-    setTdList(newTdList);
+  const deleteRow = (index) => {
+    const newRows = [...rows];
+    newRows.splice(index, 1);
+    setRows(newRows);
   };
-  const guardarActividades = () => {
-    const data = {};
-    let grupo = {};
-    const codigoGrupo = idGrupo;
-    grupo = { codigoGrupo };
-    tdList.forEach((td, i) => {
-      const concepto = td.props.children[0].props.value;
-      const porcentaje = td.props.children[1].props.value;
-      data[`td_${i + 1}`] = { concepto, porcentaje, grupo };
-    });
+
+  const handleChange = (event, index, key) => {
+    const newRows = [...rows];
+    newRows[index][key] = event.target.value;
+    setRows(newRows);
+  };
+
+  const saveRows = () => {
+    const codigoGrupo = idGrupo; // Valor de ejemplo, puedes cambiarlo por una variable de estado si lo necesitas
+    const grupo = { codigoGrupo };
+    const updatedRows = rows.map((row) => ({ ...row, grupo: grupo }));
+    const data = { notas: updatedRows };
+    //const data = { rows };
     console.log(data);
   };
 
   return (
     <>
-      <Button className="btn btn-info" onClick={() => setLgShow(true)}>
+      <Button className="btn btn-info" onClick={handleShow}>
         Agregar actividad
       </Button>
       <Modal
         size="lg"
         show={lgShow}
-        onHide={() => setLgShow(false)}
+        onHide={handleClose}
         aria-labelledby="example-modal-sizes-title-lg"
       >
         <Modal.Header closeButton>
           <Modal.Title id="example-modal-sizes-title-lg">
             ACTIVIDADES EVALUATIVAS
-            <h1>{idGrupo}</h1>
+            <h1>grupo: {idGrupo}</h1>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>
-            <button onClick={agregarEvaluacion}>+</button>
-          </div>
+          <button onClick={addRow}>Agregar Actividad +</button>
           <table>
             <thead>
               <tr>
-                <th>concepto</th>
-                <th>porcentaje</th>
-                <th>eliminar</th>
+                <th>Id</th>
+                <th>Concepto</th>
+                <th>Porcentaje</th>
+                <th></th>
               </tr>
             </thead>
-            <tbody id="actividad">{tdList}</tbody>
+            <tbody>
+              {rows.map((row, index) => (
+                <tr key={index}>
+                  <td>
+                    <input
+                      type="number"
+                      value={row.id}
+                      onChange={(event) => handleChange(event, index, "id")}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={row.concepto}
+                      onChange={(event) =>
+                        handleChange(event, index, "concepto")
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={row.porcentaje}
+                      onChange={(event) =>
+                        handleChange(event, index, "porcentaje")
+                      }
+                    />
+                  </td>
+                  <td>
+                    <button onClick={() => deleteRow(index)}>Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={guardarActividades}>
+          <Button variant="primary" onClick={saveRows}>
             Guardar
           </Button>
         </Modal.Footer>
