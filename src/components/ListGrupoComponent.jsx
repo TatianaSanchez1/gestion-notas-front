@@ -60,28 +60,20 @@ class ListGrupoComponent extends Component {
           </thead>
 
           <tbody>
-            {/* {grupo.map(grup =>
-                                <tr key = {grup.codigoGrupo}>
-                                        <td> {grup.curso.codigoCurso} </td>
-                                        <td> {grup.curso.nombreCurso} </td>
-                                        <td> {grup.codigoGrupo} </td>
-                                        <td> {grup.curso.pensum} </td>
-                                        <td> {grup.horario}</td>
-                                        <td> {grup.aula}</td>
-                                        <td> {grup.totalEstudiantes}</td>
-                                </tr>
-                                )
-                            } */}
-            <td> {12} </td>
-            <td> {"nombreCurso"} </td>
-            <td> {"codigoGrupo"} </td>
-            <td> {"pensum"} </td>
-            <td> {"pruebas"}</td>
-            <td> {"prue"}</td>
-            <td> {"pruebas"}</td>
-            <td>
-              <ModalActEval idGrupo="125" />
-            </td>
+            {grupo.map((grup) => (
+              <tr key={grup.codigoGrupo}>
+                <td> {grup.curso.codigoCurso} </td>
+                <td> {grup.curso.nombreCurso} </td>
+                <td> {grup.codigoGrupo} </td>
+                <td> {grup.curso.pensum} </td>
+                <td> {grup.horario}</td>
+                <td> {grup.aula}</td>
+                <td> {grup.totalEstudiantes}</td>
+                <td>
+                  <ModalActEval idGrupo={grup.codigoGrupo} />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

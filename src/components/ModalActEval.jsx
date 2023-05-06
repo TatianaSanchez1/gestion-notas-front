@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import {
+  cargarActividades,
+  guardarActividades,
+} from "../services/GrupoService";
 
 const ModalActEval = ({ idGrupo }) => {
   const [filas, setFilas] = useState([]);
@@ -11,19 +15,41 @@ const ModalActEval = ({ idGrupo }) => {
   const handleShow = () => setLgShow(true);
   const [rows, setRows] = useState([]);
 
+  useEffect(() => {
+    const fetchComboBox = async () => {
+      await cargarActividades(
+        idGrupo,
+        (response) => {
+          setRows(response.data);
+        },
+        (error) => {
+          console.error(error);
+        }
+      );
+    };
+    fetchComboBox();
+  }, []);
+
+  const [Modulo, setModulo] = useState([]);
+
   const addRow = () => {
     const newRow = {
-      id: "",
+      id: null,
       concepto: "",
       porcentaje: "",
     };
     setRows([...rows, newRow]);
   };
 
-  const deleteRow = (index) => {
-    const newRows = [...rows];
-    newRows.splice(index, 1);
-    setRows(newRows);
+  const deleteRow = (index, notasAsociadas) => {
+    if (notasAsociadas === true) {
+      alert("La actividad cuenta con notas asociadas");
+      return;
+    } else {
+      const newRows = [...rows];
+      newRows.splice(index, 1);
+      setRows(newRows);
+    }
   };
 
   const handleChange = (event, index, key) => {
@@ -32,17 +58,48 @@ const ModalActEval = ({ idGrupo }) => {
     setRows(newRows);
   };
 
-  const saveRows = () => {
+  const saveRows = async () => {
     const codigoGrupo = idGrupo; // Valor de ejemplo, puedes cambiarlo por una variable de estado si lo necesitas
     const grupo = { codigoGrupo };
     const updatedRows = rows.map((row) => ({ ...row, grupo: grupo }));
-    const data = { notas: updatedRows };
+    //const data = { notas: updatedRows };
+    const jsondata = JSON.stringify(updatedRows);
     //const data = { rows };
-    console.log(data);
+    await guardarActividades(
+      idGrupo,
+      jsondata,
+      (response) => {
+        console.log(response.data);
+        //toast.success("Producto agregado con éxito");
+      },
+      (error) => {
+        // toast.error("Error agregando el producto");
+        console.error(error);
+      }
+    );
   };
 
   return (
     <>
+    <div
+      className="modal show"
+      style={{ display: 'block', position: 'initial' }}
+    >
+      <Modal.Dialog>
+        <Modal.Header closeButton>
+          <Modal.Title>Guardar</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <p>¿Esta seguro que desea guardar?</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary">Cancelar</Button>
+          <Button variant="primary" onClick={saveRows}>Guardar</Button>
+        </Modal.Footer>
+      </Modal.Dialog>
+    </div>
       <Button className="btn btn-info" onClick={handleShow}>
         Agregar actividad
       </Button>
@@ -63,7 +120,7 @@ const ModalActEval = ({ idGrupo }) => {
           <table>
             <thead>
               <tr>
-                <th>Id</th>
+                <th style={{ display: "none" }}>Id</th>
                 <th>Concepto</th>
                 <th>Porcentaje</th>
                 <th></th>
@@ -72,10 +129,10 @@ const ModalActEval = ({ idGrupo }) => {
             <tbody>
               {rows.map((row, index) => (
                 <tr key={index}>
-                  <td>
+                  <td style={{ display: "none" }}>
                     <input
                       type="number"
-                      value={row.id}
+                      value={row.id ? row.id : null}
                       onChange={(event) => handleChange(event, index, "id")}
                     />
                   </td>
@@ -98,7 +155,9 @@ const ModalActEval = ({ idGrupo }) => {
                     />
                   </td>
                   <td>
-                    <button onClick={() => deleteRow(index)}>Eliminar</button>
+                    <button onClick={() => deleteRow(index, row.tieneNotas)}>
+                      Eliminar
+                    </button>
                   </td>
                 </tr>
               ))}
