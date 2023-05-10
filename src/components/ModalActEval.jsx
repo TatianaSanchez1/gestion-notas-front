@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import ModalAceptar from "./ModalAceptar";
 import {
   cargarActividades,
   guardarActividades,
 } from "../services/GrupoService";
 
 const ModalActEval = ({ idGrupo }) => {
-  const [filas, setFilas] = useState([]);
   const [lgShow, setLgShow] = useState(false);
-  const [tdList, setTdList] = useState([]);
-
   const handleClose = () => setLgShow(false);
   const handleShow = () => setLgShow(true);
   const [rows, setRows] = useState([]);
@@ -29,8 +27,6 @@ const ModalActEval = ({ idGrupo }) => {
     };
     fetchComboBox();
   }, []);
-
-  const [Modulo, setModulo] = useState([]);
 
   const addRow = () => {
     const newRow = {
@@ -78,28 +74,12 @@ const ModalActEval = ({ idGrupo }) => {
       }
     );
   };
+  const holaMundo = () => {
+    alert("hola mundo del papasito");
+  };
 
   return (
     <>
-    <div
-      className="modal show"
-      style={{ display: 'block', position: 'initial' }}
-    >
-      <Modal.Dialog>
-        <Modal.Header closeButton>
-          <Modal.Title>Guardar</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <p>¿Esta seguro que desea guardar?</p>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="secondary">Cancelar</Button>
-          <Button variant="primary" onClick={saveRows}>Guardar</Button>
-        </Modal.Footer>
-      </Modal.Dialog>
-    </div>
       <Button className="btn btn-info" onClick={handleShow}>
         Agregar actividad
       </Button>
@@ -155,9 +135,20 @@ const ModalActEval = ({ idGrupo }) => {
                     />
                   </td>
                   <td>
-                    <button onClick={() => deleteRow(index, row.tieneNotas)}>
-                      Eliminar
-                    </button>
+                    <ModalAceptar
+                      functionAcept={deleteRow}
+                      legendButton={"Eliminar"}
+                      message={`¿Desea Eliminar la actividad: ${row.concepto}?`}
+                      heading={"Eliminar Actividad"}
+                      confirmationButon={"Eliminar"}
+                      cancelButton={"Cancelar"}
+                      params={{
+                        index: index,
+                        tieneNotas: row.tieneNotas,
+                      }}
+                      colorButton={"red"}
+                      colorButtonModal={"red"}
+                    />
                   </td>
                 </tr>
               ))}
@@ -168,9 +159,16 @@ const ModalActEval = ({ idGrupo }) => {
           <Button variant="secondary" onClick={handleClose}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={saveRows}>
-            Guardar
-          </Button>
+          <ModalAceptar
+            functionAcept={saveRows}
+            legendButton={"Guardar"}
+            message={`¿Desea Guardar los cambios en las actividades?`}
+            heading={"Guardar Actividad"}
+            confirmationButon={"Guardar"}
+            cancelButton={"Cancelar"}
+            colorButtonModal={"green"}
+            colorButton={"blue"}
+          />
         </Modal.Footer>
       </Modal>
     </>
