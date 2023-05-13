@@ -37,7 +37,7 @@ const ModalActEval = ({ idGrupo }) => {
         }
       );
     };
-    fetchComboBox();
+    //fetchComboBox();
   }, []);
 
   const addRow = () => {
