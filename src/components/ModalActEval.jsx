@@ -12,6 +12,11 @@ const ModalActEval = ({ idGrupo }) => {
   const handleClose = () => setLgShow(false);
   const handleShow = () => setLgShow(true);
   const [rows, setRows] = useState([]);
+  const [porcentaje, setPorcentaje] = useState(
+    rows
+      .map((item) => parseFloat(item.porcentaje))
+      .reduce((acc, curr) => parseFloat(acc) + parseFloat(curr), 0)
+  );
 
   useEffect(() => {
     const fetchComboBox = async () => {
@@ -19,6 +24,11 @@ const ModalActEval = ({ idGrupo }) => {
         idGrupo,
         (response) => {
           setRows(response.data);
+          setPorcentaje(
+            rows
+              .map((item) => parseFloat(item.porcentaje))
+              .reduce((acc, curr) => parseFloat(acc) + parseFloat(curr), 0)
+          );
         },
         (error) => {
           console.error(error);
@@ -52,6 +62,11 @@ const ModalActEval = ({ idGrupo }) => {
     const newRows = [...rows];
     newRows[index][key] = event.target.value;
     setRows(newRows);
+    setPorcentaje(
+      rows
+        .map((item) => parseFloat(item.porcentaje))
+        .reduce((acc, curr) => parseFloat(acc) + parseFloat(curr), 0)
+    );
   };
 
   const saveRows = async () => {
@@ -148,10 +163,26 @@ const ModalActEval = ({ idGrupo }) => {
                       }}
                       colorButton={"red"}
                       colorButtonModal={"red"}
+                      buttonDisable={false}
                     />
                   </td>
                 </tr>
               ))}
+              <tr>
+                <span>
+                  Total:
+                  {porcentaje > 100 ? (
+                    <div>
+                      <br />
+                      <span style={{ color: "red" }}>
+                        los porcentajes suman más de 100%
+                      </span>
+                    </div>
+                  ) : (
+                    porcentaje + "%"
+                  )}
+                </span>
+              </tr>
             </tbody>
           </table>
         </Modal.Body>
@@ -168,6 +199,7 @@ const ModalActEval = ({ idGrupo }) => {
             cancelButton={"Cancelar"}
             colorButtonModal={"green"}
             colorButton={"blue"}
+            buttonDisable={porcentaje > 100 ? true : false}
           />
         </Modal.Footer>
       </Modal>

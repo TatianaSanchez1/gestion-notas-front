@@ -12,6 +12,7 @@ const ModalAceptar = ({
   params,
   colorButton,
   colorButtonModal,
+  buttonDisable,
 }) => {
   const [show, setShow] = useState(false);
 
@@ -22,6 +23,7 @@ const ModalAceptar = ({
   return (
     <>
       <Button
+        disabled={buttonDisable}
         variant="primary"
         onClick={handleShow}
         style={{
