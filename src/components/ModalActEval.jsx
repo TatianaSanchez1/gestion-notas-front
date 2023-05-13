@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ModalAceptar from "./ModalAceptar";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   cargarActividades,
   guardarActividades,
@@ -89,8 +91,10 @@ const ModalActEval = ({ idGrupo }) => {
       }
     );
   };
-  const holaMundo = () => {
-    alert("hola mundo del papasito");
+  const validarPorcentaje = (valor) => {
+    if (valor > 100 || valor < 0) {
+      toast.warn(`el porcentaje ingresado de ${valor} no es permitido`);
+    }
   };
 
   return (
@@ -112,6 +116,7 @@ const ModalActEval = ({ idGrupo }) => {
         </Modal.Header>
         <Modal.Body>
           <button onClick={addRow}>Agregar Actividad +</button>
+          <ToastContainer />
           <table>
             <thead>
               <tr>
@@ -144,9 +149,10 @@ const ModalActEval = ({ idGrupo }) => {
                     <input
                       type="text"
                       value={row.porcentaje}
-                      onChange={(event) =>
-                        handleChange(event, index, "porcentaje")
-                      }
+                      onChange={(event) => {
+                        handleChange(event, index, "porcentaje");
+                        validarPorcentaje(row.porcentaje);
+                      }}
                     />
                   </td>
                   <td>
@@ -175,6 +181,7 @@ const ModalActEval = ({ idGrupo }) => {
                     <div>
                       <br />
                       <span style={{ color: "red" }}>
+                        {toast.error(`el porcentaje total no es permitido`)}
                         los porcentajes suman más de 100%
                       </span>
                     </div>
