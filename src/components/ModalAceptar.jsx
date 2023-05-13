@@ -18,8 +18,9 @@ const ModalAceptar = ({
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const handleFunction = () =>
+  const handleFunction = () => {
     params ? functionAcept(Object.values(params).join(",")) : functionAcept();
+  };
   return (
     <>
       <Button
@@ -51,6 +52,7 @@ const ModalAceptar = ({
             variant="primary"
             onClick={() => {
               handleFunction();
+              handleClose();
             }}
           >
             {confirmationButon}

@@ -83,10 +83,10 @@ const ModalActEval = ({ idGrupo }) => {
       jsondata,
       (response) => {
         console.log(response.data);
-        //toast.success("Producto agregado con éxito");
+        toast.success("actividad agregada con éxito");
       },
       (error) => {
-        // toast.error("Error agregando el producto");
+        toast.error("Error guardando la actividad");
         console.error(error);
       }
     );
