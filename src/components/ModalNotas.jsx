@@ -5,11 +5,12 @@ import ModalAceptar from "./ModalAceptar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
-  cargarActividades,
-  guardarActividades,
+  cargarEstudiantes,
+  guardarNotasEstudiantes,
+  cargarEstudiantesNotas,
 } from "../services/GrupoService";
 
-const ModalActEval = ({ idGrupo }) => {
+const ModalNotas = ({ idGrupo }) => {
   const [lgShow, setLgShow] = useState(false);
   const handleClose = () => setLgShow(false);
   const handleShow = () => setLgShow(true);
@@ -21,23 +22,18 @@ const ModalActEval = ({ idGrupo }) => {
   );
 
   useEffect(() => {
-    const fetchComboBox = async () => {
-      await cargarActividades(
+    const fetchEstudiantes = async () => {
+      await cargarEstudiantes(
         idGrupo,
         (response) => {
           setRows(response.data);
-          setPorcentaje(
-            rows
-              .map((item) => parseFloat(item.porcentaje))
-              .reduce((acc, curr) => parseFloat(acc) + parseFloat(curr), 0)
-          );
         },
         (error) => {
           console.error(error);
         }
       );
     };
-    fetchComboBox();
+    //fetchEstudiantes();
   }, []);
 
   const addRow = () => {
@@ -78,7 +74,7 @@ const ModalActEval = ({ idGrupo }) => {
     //const data = { notas: updatedRows };
     const jsondata = JSON.stringify(updatedRows);
     //const data = { rows };
-    await guardarActividades(
+    await guardarNotasEstudiantes(
       idGrupo,
       jsondata,
       (response) => {
@@ -214,4 +210,4 @@ const ModalActEval = ({ idGrupo }) => {
   );
 };
 
-export default ModalActEval;
+export default ModalNotas;

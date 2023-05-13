@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import GrupoService from "../services/GrupoService";
 import ModalActEval from "./ModalActEval";
+import ModalNotas from "./ModalNotas";
 
 class ListGrupoComponent extends Component {
   constructor(props) {
@@ -50,7 +51,8 @@ class ListGrupoComponent extends Component {
             <tr>
               <th>codigo del curso</th>
               <th>nombre del curso</th>
-              <th>codigo del grupo</th>
+              <th style={{ display: "none" }}>codigo del grupo</th>
+              <th>nombre del grupo</th>
               <th>pensum</th>
               <th>horario</th>
               <th>ubicacion</th>
@@ -64,7 +66,8 @@ class ListGrupoComponent extends Component {
               <tr key={grup.codigoGrupo}>
                 <td> {grup.curso.codigoCurso} </td>
                 <td> {grup.curso.nombreCurso} </td>
-                <td> {grup.codigoGrupo} </td>
+                <td style={{ display: "none" }}> {grup.codigoGrupo} </td>
+                <td>{grup.nombreGrupo}</td>
                 <td> {grup.curso.pensum} </td>
                 <td> {grup.horario}</td>
                 <td> {grup.aula}</td>
