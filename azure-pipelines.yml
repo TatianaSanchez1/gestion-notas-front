@@ -17,10 +17,10 @@ steps:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'npm install'
 
 - task: SonarCloudPrepare@1
   inputs:
@@ -29,6 +29,11 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'gestion-notas-front1'
     projectName: 'gestion-notas-front1'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'npm run build'
 
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
