@@ -33,7 +33,7 @@ steps:
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
-    script: 'npm run build'
+    script: 'npm run build.azure'
 
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
